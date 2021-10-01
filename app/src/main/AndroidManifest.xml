@@ -3,8 +3,8 @@
   package="io.github.geeksforgeinc.androidpermissions">
   <application>
     <activity
-      android:exported="true"
       android:theme="@style/ShadowActivityTheme"
+      android:launchMode="singleTop"
       android:name="io.github.geeksforgeinc.androidpermissions.ShadowActivity" />
   </application>
 </manifest>
