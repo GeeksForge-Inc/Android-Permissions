@@ -1,14 +1,13 @@
-package com.nirmaljeffrey.dev.androidpermissions
+package io.github.geeksforgeinc.androidpermissions
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.nirmaljeffrey.dev.androidpermissions.PermissionUtils.handlePermissionGrantResults
+import io.github.geeksforgeinc.androidpermissions.PermissionUtils.handlePermissionGrantResults
 import android.content.Context
 import android.content.Intent
-import com.nirmaljeffrey.dev.androidpermissions.PermissionUtils.showDialog
-
-import com.nirmaljeffrey.dev.androidpermissions.PermissionUtils.arePermissionsGranted
-import com.nirmaljeffrey.dev.androidpermissions.PermissionUtils.launchIntentToPermissionSettings
+import io.github.geeksforgeinc.androidpermissions.PermissionUtils.showDialog
+import io.github.geeksforgeinc.androidpermissions.PermissionUtils.arePermissionsGranted
+import io.github.geeksforgeinc.androidpermissions.PermissionUtils.launchIntentToPermissionSettings
 
 
 class ShadowActivity : AppCompatActivity(), PermissionUtils.PermissionConsentListener {

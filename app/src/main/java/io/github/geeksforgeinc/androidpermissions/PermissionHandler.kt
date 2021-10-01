@@ -1,4 +1,4 @@
-package com.nirmaljeffrey.dev.androidpermissions
+package io.github.geeksforgeinc.androidpermissions
 
 import android.content.Context
 

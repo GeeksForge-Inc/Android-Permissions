@@ -1,4 +1,4 @@
-package com.nirmaljeffrey.dev.androidpermissions
+package io.github.geeksforgeinc.androidpermissions
 
 import android.os.Build
 import android.app.Activity
