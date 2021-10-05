@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">sample</string>
+  <string name="permission_denied_once_message">We need access to your phone’s camera, microphone and storage to help setup your account</string>
+  <string name="permission_denied_permanently_message">We need access to your phone\'s camera, microphone and storage to help setup your account.\nTap Settings -&gt; Permissions -&gt; and turn on all permissions</string>
+  <string name="permission_needed">Permissions needed</string>
+  <string name="allow_now">Allow Now</string>
+  <string name="later">later</string>
+  <string name="settings">Settings</string>
+  <string name="not_now">Not now</string>
+</resources>

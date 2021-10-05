@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="io.github.geeksforgeinc.androidpermissions">
+  <application>
+    <activity
+      android:launchMode="singleTop"
+      android:theme="@style/Permissions.TransparentTheme"
+      android:name="io.github.geeksforgeinc.androidpermissions.ShadowActivity" />
+  </application>
+</manifest>

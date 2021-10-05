@@ -7,4 +7,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "AndroidPermissions"
-include ':app'
+include ':library'
+include ':sample'
