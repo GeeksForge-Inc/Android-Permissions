@@ -5,17 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class DialogPermissionOptions(val blockedTitle : String,
-                                   val blockedMessage : String,
-                                   val blockedNegativeButtonText : String,
-                                   val blockedPositiveButtonText : String,
-                                   val settingOptionsEnabled : Boolean,
-                                   val deniedTitle : String = "",
-                                   val deniedMessage : String = "",
-                                   val deniedNegativeButtonText : String = "",
-                                   val deniedPositiveButtonText : String = ""
+data class DialogPermissionOptions(
+    val rationaleDialogData: DialogData,
+    val settingDialogData: DialogData? = null
 ) : PermissionOptions, Parcelable {
+
     override fun settingsEnabled(): Boolean {
-        return settingOptionsEnabled
+        return settingDialogData == null
     }
 }

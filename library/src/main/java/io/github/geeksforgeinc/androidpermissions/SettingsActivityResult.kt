@@ -6,7 +6,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContract
 
-class SettingsActivityResult : ActivityResultContract<String, String>() {
+class SettingsActivityResult : ActivityResultContract<String, Unit>() {
     override fun createIntent(context: Context, input: String?): Intent {
         return Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri
@@ -14,7 +14,7 @@ class SettingsActivityResult : ActivityResultContract<String, String>() {
         )
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): String {
-       return "settings"
+    override fun parseResult(resultCode: Int, intent: Intent?) {
+
     }
 }

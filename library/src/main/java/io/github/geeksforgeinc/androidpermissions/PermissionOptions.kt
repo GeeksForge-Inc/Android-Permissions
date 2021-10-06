@@ -1,5 +1,5 @@
 package io.github.geeksforgeinc.androidpermissions
 
 interface PermissionOptions {
-    fun settingsEnabled() : Boolean
+    fun settingsEnabled(): Boolean
 }
