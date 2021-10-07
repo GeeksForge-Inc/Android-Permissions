@@ -11,6 +11,6 @@ data class DialogPermissionOptions(
 ) : PermissionOptions, Parcelable {
 
     override fun settingsEnabled(): Boolean {
-        return settingDialogData == null
+        return settingDialogData != null
     }
 }

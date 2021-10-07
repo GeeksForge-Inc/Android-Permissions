@@ -10,51 +10,54 @@ import androidx.appcompat.app.AppCompatActivity
 class ShadowActivity : AppCompatActivity(), PermissionDialogFragment.DialogClickListener {
 
     companion object {
-        private const val SETTINGS_BUNDLE_KEY = "settings_bundle_key"
-        private const val RATIONALE_BUNDLE_KEY = "rationale_bundle_key"
-        private const val PERMISSION_OPTIONS_BUNDLE_KEY = "permission_options_bundle_key"
+        private const val PERMISSION_REQUEST_TYPE_BUNDLE_KEY = "permission_request_type_bundle_key"
+        private const val PACKAGE_NAME_BUNDLE_KEY = "package_name_bundle_key"
+        private const val DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY =
+            "dialog_permission_options_bundle_key"
         private const val PERMISSIONS_BUNDLE_KEY = "permissions_bundle_key"
         private const val PERMISSIONS_DIALOG_TAG = "permissions_dialog_tag"
 
         @JvmStatic
-        fun launchSettings(
+        fun launchSettingsWithDialog(
             context: Context,
-            permissionOptions: PermissionOptions,
+            permissionOptions: DialogPermissionOptions,
             packageName: String,
             permissions: Array<String>
         ) =
             Intent(context, ShadowActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                putExtra(SETTINGS_BUNDLE_KEY, packageName)
+                putExtra(PERMISSION_REQUEST_TYPE_BUNDLE_KEY, Constants.SETTINGS)
+                putExtra(PACKAGE_NAME_BUNDLE_KEY, packageName)
                 putExtra(
-                    PERMISSION_OPTIONS_BUNDLE_KEY,
-                    permissionOptions as DialogPermissionOptions
+                    DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY,
+                    permissionOptions
                 )
                 putExtra(PERMISSIONS_BUNDLE_KEY, permissions)
                 context.startActivity(this)
             }
 
         @JvmStatic
-        fun showRationale(
+        fun showRationaleWithDialog(
             context: Context,
-            permissionOptions: PermissionOptions,
+            permissionOptions: DialogPermissionOptions,
             packageName: String,
             permissions: Array<String>
         ) =
             Intent(context, ShadowActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                putExtra(RATIONALE_BUNDLE_KEY, packageName)
+                putExtra(PERMISSION_REQUEST_TYPE_BUNDLE_KEY, Constants.RATIONALE)
+                putExtra(PACKAGE_NAME_BUNDLE_KEY, packageName)
                 putExtra(PERMISSIONS_BUNDLE_KEY, permissions)
                 putExtra(
-                    PERMISSION_OPTIONS_BUNDLE_KEY,
-                    permissionOptions as DialogPermissionOptions
+                    DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY,
+                    permissionOptions
                 )
                 context.startActivity(this)
             }
     }
 
     private var permissions: Array<String>? = null
-    private var permissionsOptions: DialogPermissionOptions? = null
+    private var dialogPermissionsOptions: DialogPermissionOptions? = null
     private var applicationPackageName: String? = null
 
     private val settingsLauncher = registerForActivityResult(SettingsActivityResult()) {
@@ -73,21 +76,21 @@ class ShadowActivity : AppCompatActivity(), PermissionDialogFragment.DialogClick
                 ) {
                     ifNotNull(
                         applicationPackageName,
-                        permissionsOptions,
+                        dialogPermissionsOptions,
                         permissions
                     ) { packageName, options, perms ->
-                        showRationale(
+                        showRationaleWithDialog(
                             this, options, packageName, perms
                         )
                     }
                 } else {
-                    if (permissionsOptions?.settingsEnabled() == true) {
+                    if (dialogPermissionsOptions?.settingsEnabled() == true) {
                         ifNotNull(
                             applicationPackageName,
-                            permissionsOptions,
+                            dialogPermissionsOptions,
                             permissions
                         ) { packageName, options, perms ->
-                            launchSettings(
+                            launchSettingsWithDialog(
                                 this, options, packageName, perms
                             )
                         }
@@ -98,7 +101,7 @@ class ShadowActivity : AppCompatActivity(), PermissionDialogFragment.DialogClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            handleIntent(intent)
+        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -108,40 +111,45 @@ class ShadowActivity : AppCompatActivity(), PermissionDialogFragment.DialogClick
 
 
     private fun handleIntent(intent: Intent) {
-        if (intent.hasExtra(SETTINGS_BUNDLE_KEY) && intent.hasExtra(
-                PERMISSION_OPTIONS_BUNDLE_KEY
+        if (intent.hasExtra(PERMISSION_REQUEST_TYPE_BUNDLE_KEY) && intent.hasExtra(
+                PACKAGE_NAME_BUNDLE_KEY
             ) && intent.hasExtra(PERMISSIONS_BUNDLE_KEY)
         ) {
-            applicationPackageName = intent.getStringExtra(SETTINGS_BUNDLE_KEY)
-            permissionsOptions = intent.getParcelableExtra(PERMISSION_OPTIONS_BUNDLE_KEY)
+            applicationPackageName = intent.getStringExtra(PACKAGE_NAME_BUNDLE_KEY)
             permissions = intent.getStringArrayExtra(PERMISSIONS_BUNDLE_KEY)
-            ifNotNull(
-                applicationPackageName,
-                permissionsOptions,
-                permissions
-            ) { packageName, permissionOptions, permissions ->
-                permissionOptions.settingDialogData?.let {
-                    PermissionDialogFragment.showSettingsDialog(it).apply {
-                        show(supportFragmentManager, PERMISSIONS_DIALOG_TAG)
+            val permissionRequestType =
+                intent.getIntExtra(PERMISSION_REQUEST_TYPE_BUNDLE_KEY, Constants.RATIONALE)
+            if (Constants.SETTINGS == permissionRequestType) {
+                if (intent.hasExtra(DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY)) {
+                    dialogPermissionsOptions =
+                        intent.getParcelableExtra(DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY)
+                    ifNotNull(
+                        applicationPackageName,
+                        dialogPermissionsOptions,
+                        permissions
+                    ) { _, permissionOptions, _ ->
+                        permissionOptions.settingDialogData?.let {
+                            PermissionDialogFragment.showSettingsDialog(it).apply {
+                                show(supportFragmentManager, PERMISSIONS_DIALOG_TAG)
+                            }
+                        }
                     }
                 }
-            }
-        } else if (intent.hasExtra(RATIONALE_BUNDLE_KEY) && intent.hasExtra(
-                PERMISSION_OPTIONS_BUNDLE_KEY
-            ) && intent.hasExtra(PERMISSIONS_BUNDLE_KEY)
-        ) {
-            applicationPackageName = intent.getStringExtra(RATIONALE_BUNDLE_KEY)
-            permissionsOptions = intent.getParcelableExtra(PERMISSION_OPTIONS_BUNDLE_KEY)
-            permissions = intent.getStringArrayExtra(PERMISSIONS_BUNDLE_KEY)
-            ifNotNull(
-                applicationPackageName,
-                permissionsOptions,
-                permissions
-            ) { packageName, permissionOptions, permissions ->
-                PermissionDialogFragment.showRationaleDialog(permissionOptions.rationaleDialogData)
-                    .apply {
-                        show(supportFragmentManager, PERMISSIONS_DIALOG_TAG)
+            } else if (Constants.RATIONALE == permissionRequestType) {
+                if (intent.hasExtra(DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY)) {
+                    dialogPermissionsOptions =
+                        intent.getParcelableExtra(DIALOG_PERMISSION_OPTIONS_BUNDLE_KEY)
+                    ifNotNull(
+                        applicationPackageName,
+                        dialogPermissionsOptions,
+                        permissions
+                    ) { _, permissionOptions, _ ->
+                        PermissionDialogFragment.showRationaleDialog(permissionOptions.rationaleDialogData)
+                            .apply {
+                                show(supportFragmentManager, PERMISSIONS_DIALOG_TAG)
+                            }
                     }
+                }
             }
         }
     }

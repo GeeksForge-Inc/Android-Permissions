@@ -35,7 +35,7 @@ class PermissionDialogFragment : DialogFragment() {
 
     private var DialogData: DialogData? = null
 
-    @DialogType
+    @PermissionRequestType
     private var dialogType: Int = Constants.RATIONALE
     private var dialogClickListener: DialogClickListener? = null
 
