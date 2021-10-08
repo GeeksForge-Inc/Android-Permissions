@@ -41,7 +41,7 @@ Example:
 ```
 2. create permissionhandler by passing permission options
 ```kotlin
-   permissionHandler = PermissionHandler(this, this.packageName, permissionOptions) {
+  val permissionHandler = PermissionHandler(this, this.packageName, permissionOptions) {
             Toast.makeText(this, "Permissions Granted", Toast.LENGTH_LONG).show()
         }
 ```
